@@ -17,12 +17,16 @@ jobs:
     runs-on: ubuntu-24.04
     container:
       image: i386/ubuntu:bionic
+    strategy:
+      fail-fast: false
+      matrix:
+        ghc: ["8.10.7", "9.6.6"]
     steps:
     - name: Install
       run: |
         apt-get update -y
         apt-get install -y autoconf build-essential zlib1g-dev libgmp-dev curl libncurses5 libtinfo5 libncurses5-dev libtinfo-dev
-        curl --proto '=https' --tlsv1.2 -sSf https://get-ghcup.haskell.org | BOOTSTRAP_HASKELL_NONINTERACTIVE=1 BOOTSTRAP_HASKELL_INSTALL_NO_STACK=1 BOOTSTRAP_HASKELL_GHC_VERSION=9.6.6 sh
+        curl --proto '=https' --tlsv1.2 -sSf https://get-ghcup.haskell.org | BOOTSTRAP_HASKELL_NONINTERACTIVE=1 BOOTSTRAP_HASKELL_INSTALL_NO_STACK=1 BOOTSTRAP_HASKELL_GHC_VERSION=${{ matrix.ghc }} sh
     # v1 is implemented inside the runner rather than in Node.js, so unlike
     # later versions it works in this 32-bit container. It cannot be told not
     # to persist credentials; the read-only token limits what they allow.
